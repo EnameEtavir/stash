@@ -77,7 +77,10 @@ func getSceneFileTagger(s *models.Scene) tagger {
 	return tagger{
 		ID:   s.ID,
 		Type: "scene",
-		Name: s.GetTitle(),
+		Name: QualifiedName{
+			String:    s.GetTitle(),
+			Qualified: true,
+		},
 		Path: s.Path,
 	}
 }

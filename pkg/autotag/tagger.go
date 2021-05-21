@@ -101,20 +101,21 @@ func getPathWords(path string) []string {
 }
 
 type tagger struct {
-	ID   int
-	Type string
-	Name string
-	Path string
+	ID      int
+	Type    string
+	Name    QualifiedName
+	Aliases []QualifiedName
+	Path    string
 }
 
 type addLinkFunc func(subjectID, otherID int) (bool, error)
 
 func (t *tagger) addError(otherType, otherName string, err error) error {
-	return fmt.Errorf("error adding %s '%s' to %s '%s': %s", otherType, otherName, t.Type, t.Name, err.Error())
+	return fmt.Errorf("error adding %s '%s' to %s '%s': %s", otherType, otherName, t.Type, t.Name.String, err.Error())
 }
 
 func (t *tagger) addLog(otherType, otherName string) {
-	logger.Infof("Added %s '%s' to %s '%s'", otherType, otherName, t.Type, t.Name)
+	logger.Infof("Added %s '%s' to %s '%s'", otherType, otherName, t.Type, t.Name.String)
 }
 
 func (t *tagger) tagPerformers(performerReader models.PerformerReader, addFunc addLinkFunc) error {
@@ -183,20 +184,35 @@ func (t *tagger) tagTags(tagReader models.TagReader, addFunc addLinkFunc) error 
 }
 
 func (t *tagger) tagScenes(paths []string, sceneReader models.SceneReader, addFunc addLinkFunc) error {
-	others, err := getMatchingScenes(t.Name, paths, sceneReader)
-	if err != nil {
-		return err
+
+	var scenes []*models.Scene
+
+	if t.Name.Qualified {
+		nameScenes, err := getMatchingScenes(t.Name.String, paths, sceneReader)
+		if err != nil {
+			return err
+		}
+		scenes = append(scenes, nameScenes...)
+	}
+	for _, alias := range t.Aliases {
+		if alias.Qualified {
+			aliasScenes, err := getMatchingScenes(alias.String, paths, sceneReader)
+			if err != nil {
+				return err
+			}
+			scenes = append(scenes, aliasScenes...)
+		}
 	}
 
-	for _, p := range others {
-		added, err := addFunc(t.ID, p.ID)
+	for _, s := range scenes {
+		added, err := addFunc(t.ID, s.ID)
 
 		if err != nil {
-			return t.addError("scene", p.GetTitle(), err)
+			return t.addError("scene", s.GetTitle(), err)
 		}
 
 		if added {
-			t.addLog("scene", p.GetTitle())
+			t.addLog("scene", s.GetTitle())
 		}
 	}
 
@@ -204,7 +220,7 @@ func (t *tagger) tagScenes(paths []string, sceneReader models.SceneReader, addFu
 }
 
 func (t *tagger) tagImages(paths []string, imageReader models.ImageReader, addFunc addLinkFunc) error {
-	others, err := getMatchingImages(t.Name, paths, imageReader)
+	others, err := getMatchingImages(t.Name.String, paths, imageReader)
 	if err != nil {
 		return err
 	}
@@ -225,7 +241,7 @@ func (t *tagger) tagImages(paths []string, imageReader models.ImageReader, addFu
 }
 
 func (t *tagger) tagGalleries(paths []string, galleryReader models.GalleryReader, addFunc addLinkFunc) error {
-	others, err := getMatchingGalleries(t.Name, paths, galleryReader)
+	others, err := getMatchingGalleries(t.Name.String, paths, galleryReader)
 	if err != nil {
 		return err
 	}

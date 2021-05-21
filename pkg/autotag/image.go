@@ -77,7 +77,10 @@ func getImageFileTagger(s *models.Image) tagger {
 	return tagger{
 		ID:   s.ID,
 		Type: "image",
-		Name: s.GetTitle(),
+		Name: QualifiedName{
+			String:    s.GetTitle(),
+			Qualified: true,
+		},
 		Path: s.Path,
 	}
 }

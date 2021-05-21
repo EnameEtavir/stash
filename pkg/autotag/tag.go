@@ -29,14 +29,19 @@ func getTagTaggers(p *models.Tag, aliases []string) []tagger {
 	ret := []tagger{{
 		ID:   p.ID,
 		Type: "tag",
-		Name: p.Name,
+		Name: QualifiedName{
+			String:    p.Name,
+			Qualified: true,
+		},
 	}}
-
 	for _, a := range aliases {
 		ret = append(ret, tagger{
 			ID:   p.ID,
 			Type: "tag",
-			Name: a,
+			Name: QualifiedName{
+				String:    a,
+				Qualified: true,
+			},
 		})
 	}
 

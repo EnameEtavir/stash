@@ -100,7 +100,10 @@ func getStudioTagger(p *models.Studio) tagger {
 	return tagger{
 		ID:   p.ID,
 		Type: "studio",
-		Name: p.Name.String,
+		Name: QualifiedName{
+			String:    p.Name.String,
+			Qualified: true,
+		},
 	}
 }
 

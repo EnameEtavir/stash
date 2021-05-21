@@ -16,10 +16,20 @@ func getMatchingPerformers(path string, performerReader models.PerformerReader) 
 	}
 
 	var ret []*models.Performer
+
+	// TODO: currently we only conservatively only match "qualified" names which are judged to be good for matching.
+	// 		As a follow-up there should be "possible" matches added (unique match via "qualified" and "possible") that
+	//      also delivers the UI feature to move a match between "possible" and "qualified".
+	// 		For example a second getPossiblyMatchingPerformers for performers_possible_scenes,
+	//		performers_possible_images ... should be added
 	for _, p := range performers {
-		// TODO - commenting out alias handling until both sides work correctly
-		if nameMatchesPath(p.Name.String, path) { // || nameMatchesPath(p.Aliases.String, path) {
-			ret = append(ret, p)
+		qualifiedNames := getQualifiedPerformerNames(p)
+		for _, qualifiedName := range qualifiedNames {
+			if qualifiedName.Qualified {
+				if nameMatchesPath(qualifiedName.String, path) {
+					ret = append(ret, p)
+				}
+			}
 		}
 	}
 
@@ -28,9 +38,10 @@ func getMatchingPerformers(path string, performerReader models.PerformerReader) 
 
 func getPerformerTagger(p *models.Performer) tagger {
 	return tagger{
-		ID:   p.ID,
-		Type: "performer",
-		Name: p.Name.String,
+		ID:      p.ID,
+		Type:    "performer",
+		Name:    getQualifiedPerformerName(p.Name.String),
+		Aliases: getQualifiedPerformerAliases(p),
 	}
 }
 
