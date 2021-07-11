@@ -86,6 +86,10 @@ export const SettingsConfigurationPanel: React.FC = () => {
     GQL.HashAlgorithm | undefined
   >(undefined);
   const [parallelTasks, setParallelTasks] = useState<number>(0);
+  const [
+    onlyQualifiedPerformers,
+    setOnlyQualifiedPerformers,
+  ] = useState<boolean>(true);
   const [previewAudio, setPreviewAudio] = useState<boolean>(true);
   const [previewSegments, setPreviewSegments] = useState<number>(0);
   const [previewSegmentDuration, setPreviewSegmentDuration] = useState<number>(
@@ -149,6 +153,7 @@ export const SettingsConfigurationPanel: React.FC = () => {
     videoFileNamingAlgorithm:
       (videoFileNamingAlgorithm as GQL.HashAlgorithm) ?? undefined,
     parallelTasks,
+    onlyQualifiedPerformers,
     previewAudio,
     previewSegments,
     previewSegmentDuration,
@@ -193,6 +198,7 @@ export const SettingsConfigurationPanel: React.FC = () => {
       setVideoFileNamingAlgorithm(conf.general.videoFileNamingAlgorithm);
       setCalculateMD5(conf.general.calculateMD5);
       setParallelTasks(conf.general.parallelTasks);
+      setOnlyQualifiedPerformers(conf.general.onlyQualifiedPerformers);
       setPreviewAudio(conf.general.previewAudio);
       setPreviewSegments(conf.general.previewSegments);
       setPreviewSegmentDuration(conf.general.previewSegmentDuration);
@@ -600,6 +606,30 @@ export const SettingsConfigurationPanel: React.FC = () => {
             {intl.formatMessage({
               id: "config.general.generated_file_naming_hash_desc",
             })}
+          </Form.Text>
+        </Form.Group>
+      </Form.Group>
+
+      <hr />
+
+      <Form.Group id="auto-tagging">
+        <h4>
+          {intl.formatMessage({
+            id: "config.general.auto_tagging.auto_tagging",
+          })}
+        </h4>
+        <Form.Group>
+          <Form.Check
+            id="auto-tagging-only-include-qualified-performers"
+            checked={onlyQualifiedPerformers}
+            label="Auto-tag only qualified performer names"
+            onChange={() =>
+              setOnlyQualifiedPerformers(!onlyQualifiedPerformers)
+            }
+          />
+          <Form.Text className="text-muted">
+            Only auto-tag performers that have a qualified name (a name/alias
+            that is not too generic or simple to get good matching results)
           </Form.Text>
         </Form.Group>
       </Form.Group>

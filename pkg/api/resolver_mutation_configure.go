@@ -90,6 +90,7 @@ func (r *mutationResolver) ConfigureGeneral(ctx context.Context, input models.Co
 	}
 
 	c.Set(config.PreviewAudio, input.PreviewAudio)
+	c.Set(config.OnlyQualifiedPerformers, input.OnlyQualifiedPerformers)
 
 	if input.PreviewSegments != nil {
 		c.Set(config.PreviewSegments, *input.PreviewSegments)

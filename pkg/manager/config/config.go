@@ -65,6 +65,9 @@ const parallelTasksDefault = 1
 
 const PreviewPreset = "preview_preset"
 
+const OnlyQualifiedPerformers = "auto_tag_only_qualified_performers"
+const onlyQualifiedPerformersDefault = false
+
 const PreviewAudio = "preview_audio"
 const previewAudioDefault = true
 
@@ -427,6 +430,10 @@ func (i *Instance) GetParallelTasksWithAutoDetection() int {
 	return parallelTasks
 }
 
+func (i *Instance) GetOnlyQualifiedPerformers() bool {
+	return viper.GetBool(OnlyQualifiedPerformers)
+}
+
 func (i *Instance) GetPreviewAudio() bool {
 	return viper.GetBool(PreviewAudio)
 }
@@ -773,6 +780,7 @@ func (i *Instance) setDefaultValues() error {
 	viper.SetDefault(PreviewSegments, previewSegmentsDefault)
 	viper.SetDefault(PreviewExcludeStart, previewExcludeStartDefault)
 	viper.SetDefault(PreviewExcludeEnd, previewExcludeEndDefault)
+	viper.SetDefault(OnlyQualifiedPerformers, onlyQualifiedPerformersDefault)
 	viper.SetDefault(PreviewAudio, previewAudioDefault)
 	viper.SetDefault(SoundOnPreview, false)
 

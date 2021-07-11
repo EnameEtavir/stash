@@ -3,6 +3,7 @@ package autotag
 import (
 	"github.com/stashapp/stash/pkg/gallery"
 	"github.com/stashapp/stash/pkg/image"
+	"github.com/stashapp/stash/pkg/manager/config"
 	"github.com/stashapp/stash/pkg/models"
 	"github.com/stashapp/stash/pkg/scene"
 )
@@ -10,6 +11,8 @@ import (
 func getMatchingPerformers(path string, performerReader models.PerformerReader) ([]*models.Performer, error) {
 	words := getPathWords(path)
 	performers, err := performerReader.QueryForAutoTag(words)
+
+	c := config.GetInstance()
 
 	if err != nil {
 		return nil, err
@@ -25,7 +28,7 @@ func getMatchingPerformers(path string, performerReader models.PerformerReader) 
 	for _, p := range performers {
 		qualifiedNames := getQualifiedPerformerNames(p)
 		for _, qualifiedName := range qualifiedNames {
-			if qualifiedName.Qualified {
+			if qualifiedName.Qualified || !c.GetOnlyQualifiedPerformers() {
 				if nameMatchesPath(qualifiedName.String, path) {
 					ret = append(ret, p)
 				}

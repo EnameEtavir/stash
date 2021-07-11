@@ -47,6 +47,8 @@ input ConfigGeneralInput {
   videoFileNamingAlgorithm: HashAlgorithm!
   """Number of parallel tasks to start during scan/generate"""
   parallelTasks: Int
+  """Only auto-tag performers with a qualified name/alias"""
+  onlyQualifiedPerformers: Boolean!
   """Include audio stream in previews"""
   previewAudio: Boolean!
   """Number of segments in a preview file"""
@@ -120,6 +122,8 @@ type ConfigGeneralResult {
   videoFileNamingAlgorithm: HashAlgorithm!
   """Number of parallel tasks to start during scan/generate"""
   parallelTasks: Int!
+  """Only auto-tag performers with a qualified name/alias"""
+  onlyQualifiedPerformers: Boolean!
   """Include audio stream in previews"""
   previewAudio: Boolean!
   """Number of segments in a preview file"""

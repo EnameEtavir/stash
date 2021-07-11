@@ -65,6 +65,7 @@ func makeConfigGeneralResult() *models.ConfigGeneralResult {
 		CalculateMd5:                 config.IsCalculateMD5(),
 		VideoFileNamingAlgorithm:     config.GetVideoFileNamingAlgorithm(),
 		ParallelTasks:                config.GetParallelTasks(),
+		OnlyQualifiedPerformers:      config.GetOnlyQualifiedPerformers(),
 		PreviewAudio:                 config.GetPreviewAudio(),
 		PreviewSegments:              config.GetPreviewSegments(),
 		PreviewSegmentDuration:       config.GetPreviewSegmentDuration(),

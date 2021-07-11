@@ -15,6 +15,7 @@ package autotag
 
 import (
 	"fmt"
+	"github.com/stashapp/stash/pkg/manager/config"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -185,9 +186,10 @@ func (t *tagger) tagTags(tagReader models.TagReader, addFunc addLinkFunc) error 
 
 func (t *tagger) tagScenes(paths []string, sceneReader models.SceneReader, addFunc addLinkFunc) error {
 
+	c := config.GetInstance()
 	var scenes []*models.Scene
 
-	if t.Name.Qualified {
+	if t.Name.Qualified || !c.GetOnlyQualifiedPerformers() {
 		nameScenes, err := getMatchingScenes(t.Name.String, paths, sceneReader)
 		if err != nil {
 			return err
@@ -195,7 +197,7 @@ func (t *tagger) tagScenes(paths []string, sceneReader models.SceneReader, addFu
 		scenes = append(scenes, nameScenes...)
 	}
 	for _, alias := range t.Aliases {
-		if alias.Qualified {
+		if alias.Qualified || !c.GetOnlyQualifiedPerformers() {
 			aliasScenes, err := getMatchingScenes(alias.String, paths, sceneReader)
 			if err != nil {
 				return err
